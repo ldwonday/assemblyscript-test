@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+      fetch("./build/optimized.wasm").then((res) => {
+        console.log(res)
+        res.arrayBuffer().then(buffer => {
+          const compiled = new WebAssembly.Module(buffer);
+          const imports = {
+            env: {
+              abort(_msg, _file, line, column) {
+                console.error("abort called at index.ts:" + line + ":" + column);
+              }
+            }
+          };
+          const exports = new WebAssembly.Instance(compiled, imports).exports
+          console.log(exports.add(1, 2))
+        })
+      })
+    </script>
+</head>
+<body>
+</body>
+</html>
